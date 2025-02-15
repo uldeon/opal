@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opal AI</title>
+    <style>
+        @keyframes colorChange {
+            0% {
+                color: #28709B;
+            }
+            50% {
+                color: #072232;
+            }
+            100% {
+                color: #2CD45F;
+            }
+        }
+        @keyframes zoomInOut {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        .chat-container {
+            width: 450px;
+            background: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+        .chat-header {
+            background: #000000;
+            color: #ffffff;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #3c3c3c;
+        }
+        .chat-header img {
+            width: 120px;
+            height: auto;
+            border-radius: 10px;
+            animation: zoomInOut 3s;
+        }
+        .chat-messages {
+            height: 350px;
+            padding: 15px;
+            overflow-y: auto;
+            border-bottom: 1px solid #3c3c3c;
+        }
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .chat-message.user {
+            background: #4c4c4c;
+            text-align: right;
+        }
+        .chat-message.bot {
+            background: #333333;
+            text-align: left;
+        }
+        .chat-input {
+            display: flex;
+            padding: 15px;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #3c3c3c;
+            border-radius: 5px;
+            background: #252525;
+            color: #e0e0e0;
+            animation: zoomInOut 2s;
+        }
+        .chat-input button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background: #57e476;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            animation: zoomInOut 2s;
+        }
+        .chat-input button:hover {
+            background: #0056b3;
+        }
+        .chat-input-button-text {
+            animation: colorChange 3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <img src="Opal.png" alt="Opal AI">
+        </div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Tapez votre message..." />
+            <button onclick="sendMessage()">
+                <div class="chat-input-button-text">Envoyer</div>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const answers = {
+            "bonjour": "Bonjour ! Je suis Opal 1.0 Poet IQ150, la toute première intelligence artificielle de Opal AI.",
+            "hello": "Hello ! I'm Opal 1.0 Poet IQ150, the first artificial intelligence of Opal AI.",
+            "qui es-tu ?": "Je suis Opal 1.0 Poet IQ150, une intelligence artificielle développée par Opal AI.",
+"quel est ton but ?": "Mon but est de t'aider en répondant à tes questions et en fournissant des informations utiles.",
+"comment puis-je te poser une question ?": "Tu peux simplement taper ta question dans la zone de texte et cliquer sur 'Envoyer'.",
+"que peux-tu faire ?": "Je peux répondre à des questions, fournir des informations et t'aider avec des tâches simples.",
+"peux-tu m'aider avec mes devoirs ?": "Je peux essayer ! Pose ta question et je ferai de mon mieux pour t'aider.",
+"quelle est la capitale de la france ?": "La capitale de la France est Paris.",
+"quel est le plus grand océan du monde ?": "Le plus grand océan du monde est l'océan Pacifique.",
+"qui a écrit 'le petit prince' ?": "'Le Petit Prince' a été écrit par Antoine de Saint-Exupéry.",
+"raconte-moi une blague": "Pourquoi les plongeurs plongent-ils toujours en arrière et jamais en avant ? Parce que sinon ils tombent encore dans le bateau !",
+"quel est ton film préféré ?": "Je n'ai pas de film préféré, mais j'aime beaucoup les films de science-fiction !",
+"quelles sont les dernières nouvelles ?": "Je ne peux pas accéder aux dernières nouvelles en temps réel, mais je peux t'aider avec des informations générales.",
+"qu'est-ce que l'intelligence artificielle ?": "L'intelligence artificielle (IA) est un domaine de l'informatique qui vise à créer des machines capables de réaliser des tâches nécessitant normalement l'intelligence humaine.",
+"comment fonctionne un ordinateur ?": "Un ordinateur fonctionne en exécutant des instructions sous forme de code binaire, traitées par le processeur, et en utilisant des composants comme la mémoire et le stockage pour manipuler et stocker des données.",
+"qu'est-ce que le changement climatique ?": "Le changement climatique est une modification à long terme des statistiques climatiques, notamment les variations de température et des précipitations, souvent causée par l'activité humaine.",
+"qui a découvert l'amérique ?": "L'Amérique a été découverte par Christophe Colomb en 1492.",
+"qu'est-ce que la photosynthèse ?": "La photosynthèse est le processus par lequel les plantes, les algues et certaines bactéries convertissent la lumière solaire en énergie chimique, produisant de la matière organique à partir du dioxyde de carbone et de l'eau.",
+"qui a peint la joconde ?": "La Joconde a été peinte par Léonard de Vinci.",
+"qu'est-ce que la relativité générale ?": "La relativité générale est une théorie développée par Albert Einstein qui décrit la gravitation comme une courbure de l'espace-temps causée par la masse et l'énergie.",
+"qui a inventé l'ampoule électrique ?": "L'ampoule électrique a été inventée par Thomas Edison.",
+"qu'est-ce que le big bang ?": "Le Big Bang est une théorie scientifique qui décrit l'origine et l'évolution de l'univers, qui aurait commencé par une singularité extrêmement chaude et dense il y a environ 13,8 milliards d'années.",
+"qui a écrit '1984' ?": "'1984' a été écrit par George Orwell.",
+"qu'est-ce que la blockchain ?": "La blockchain est une technologie de registre distribué qui enregistre des transactions de manière sécurisée et transparente sur un réseau décentralisé.",
+"qui a fondé microsoft ?": "Microsoft a été fondé par Bill Gates et Paul Allen.",
+"qu'est-ce que l'énergie renouvelable ?": "L'énergie renouvelable est une énergie produite à partir de sources naturelles qui se renouvellent rapidement, comme le soleil, le vent, l'eau et la biomasse.",
+"qui a découvert la pénicilline ?": "La pénicilline a été découverte par Alexander Fleming.",
+"qu'est-ce que la théorie de l'évolution ?": "La théorie de l'évolution, proposée par Charles Darwin, explique comment les espèces changent au fil du temps par le processus de sélection naturelle.",
+"qui a composé la 9ème symphonie ?": "La 9ème symphonie a été composée par Ludwig van Beethoven.",
+"qu'est-ce que l'internet des objets (iot) ?": "L'Internet des objets (IoT) est un réseau de dispositifs physiques connectés à Internet, capables de collecter et d'échanger des données.",
+"qui a inventé le téléphone ?": "Le téléphone a été inventé par Alexander Graham Bell.",
+"qu'est-ce que la physique quantique ?": "La physique quantique est une branche de la physique qui décrit le comportement des particules à l'échelle atomique et subatomique.",
+"qui a écrit 'don quichotte' ?": "'Don Quichotte' a été écrit par Miguel de Cervantès.",
+"qu'est-ce que l'intelligence émotionnelle ?": "L'intelligence émotionnelle est la capacité à reconnaître, comprendre et gérer ses propres émotions, ainsi que celles des autres.",
+"qui a peint 'la nuit étoilée' ?": "'La Nuit étoilée' a été peinte par Vincent van Gogh.",
+"qu'est-ce que la cryptographie ?": "La cryptographie est la pratique de sécuriser l'information en la transformant en un format illisible pour les non-autorisés.",
+"qui a fondé apple ?": "Apple a été fondé par Steve Jobs, Steve Wozniak et Ronald Wayne.",
+"qu'est-ce que la réalité augmentée ?": "La réalité augmentée (AR) est une technologie qui superpose des éléments virtuels au monde réel, souvent via des dispositifs comme des smartphones ou des lunettes spéciales.",
+"qui a écrit 'roméo et juliette' ?": "'Roméo et Juliette' a été écrit par William Shakespeare.",
+"qu'est-ce que le machine learning ?": "Le machine learning est une méthode d'analyse de données qui permet aux ordinateurs d'apprendre à partir de l'expérience et de s'améliorer sans être explicitement programmés.",
+"qui a découvert la structure de l'adn ?": "La structure de l'ADN a été découverte par James Watson et Francis Crick, avec l'aide des travaux de Rosalind Franklin et Maurice Wilkins.",
+"quelle est la capitale de l'allemagne ?": "La capitale de l'Allemagne est Berlin.",
+"quelle est la capitale de l'italie ?": "La capitale de l'Italie est Rome.",
+"quelle est la capitale de l'espagne ?": "La capitale de l'Espagne est Madrid.",
+"quelle est la capitale du japon ?": "La capitale du Japon est Tokyo.",
+"quelle est la capitale de la chine ?": "La capitale de la Chine est Pékin.",
+"quelle est la capitale de l'inde ?": "La capitale de l'Inde est New Delhi.",
+"quelle est la capitale du brésil ?": "La capitale du Brésil est Brasília.",
+"quelle est la capitale de l'australie ?": "La capitale de l'Australie est Canberra.",
+"quelle est la capitale du canada ?": "La capitale du Canada est Ottawa.",
+"quelle est la capitale de la russie ?": "La capitale de la Russie est Moscou.",
+"quelle est la capitale de l'afrique du sud ?": "L'Afrique du Sud a trois capitales : Pretoria (exécutive), Le Cap (législative) et Bloemfontein (judiciaire).",
+"quelle est la capitale de l'argentine ?": "La capitale de l'Argentine est Buenos Aires.",
+"quelle est la capitale de l'égypte ?": "La capitale de l'Égypte est Le Caire.",
+"quelle est la capitale de la turquie ?": "La capitale de la Turquie est Ankara.",
+"quelle est la capitale de la grèce ?": "La capitale de la Grèce est Athènes.",
+"quelle est la capitale de la suède ?": "La capitale de la Suède est Stockholm.",
+"quelle est la capitale de la norvège ?": "La capitale de la Norvège est Oslo.",
+"quelle est la capitale du danemark ?": "La capitale du Danemark est Copenhague.",
+"quelle est la capitale de la finlande ?": "La capitale de la Finlande est Helsinki.",
+"quelle est la capitale de la suisse ?": "La capitale de la Suisse est Berne.",
+"quelle est la capitale de l'autriche ?": "La capitale de l'Autriche est Vienne.",
+"quelle est la capitale des pays-bas ?": "La capitale des Pays-Bas est Amsterdam.",
+"quelle est la capitale de la belgique ?": "La capitale de la Belgique est Bruxelles.",
+"quelle est la capitale du portugal ?": "La capitale du Portugal est Lisbonne.",
+"quelle est la capitale de la pologne ?": "La capitale de la Pologne est Varsovie.",
+"quelle est la capitale de la république tchèque ?": "La capitale de la République tchèque est Prague.",
+"quelle est la capitale de la hongrie ?": "La capitale de la Hongrie est Budapest.",
+"quelle est la capitale de la roumanie ?": "La capitale de la Roumanie est Bucarest.",
+"quelle est la capitale de la bulgarie ?": "La capitale de la Bulgarie est Sofia.",
+"quelle est la capitale de la serbie ?": "La capitale de la Serbie est Belgrade.",
+"quelle est la capitale de la croatie ?": "La capitale de la Croatie est Zagreb.",
+"quelle est la capitale de la slovénie ?": "La capitale de la Slovénie est Ljubljana.",
+"quelle est la capitale de la slovaquie ?": "La capitale de la Slovaquie est Bratislava.",
+"quelle est la capitale de l'ukraine ?": "La capitale de l'Ukraine est Kiev.",
+"quelle est la capitale de la biélorussie ?": "La capitale de la Biélorussie est Minsk.",
+"quelle est la capitale de la moldavie ?": "La capitale de la Moldavie est Chișinău.",
+"quelle est la capitale de l'irlande ?": "La capitale de l'Irlande est Dublin.",
+"quelle est la capitale du royaume-uni ?": "La capitale du Royaume-Uni est Londres.",
+"quelle est la capitale de l'islande ?": "La capitale de l'Islande est Reykjavik.",
+"quelle est la capitale de la lettonie ?": "La capitale de la Lettonie est Riga.",
+"quelle est la capitale de la lituanie ?": "La capitale de la Lituanie est Vilnius.",
+"quelle est la capitale de l'estonie ?": "La capitale de l'Estonie est Tallinn.",
+"quelle est la capitale de la géorgie ?": "La capitale de la Géorgie est Tbilissi.",
+"quelle est la capitale de l'arménie ?": "La capitale de l'Arménie est Erevan.",
+"quelle est la capitale de l'azerbaïdjan ?": "La capitale de l'Azerbaïdjan est Bakou.",
+"quelle est la capitale du kazakhstan ?": "La capitale du Kazakhstan est Astana.",
+"quelle est la capitale de l'ouzbékistan ?": "La capitale de l'Ouzbékistan est Tachkent.",
+"quelle est la capitale du turkménistan ?": "La capitale du Turkménistan est Achgabat.",
+"quelle est la capitale du kirghizistan ?": "La capitale du Kirghizistan est Bichkek.",
+"quelle est la capitale du tadjikistan ?": "La capitale du Tadjikistan est Douchanbé.",
+"quelle est la capitale de l'afghanistan ?": "La capitale de l'Afghanistan est Kaboul.",
+"quelle est la capitale du pakistan ?": "La capitale du Pakistan est Islamabad.",
+"quelle est la capitale du bangladesh ?": "La capitale du Bangladesh est Dacca.",
+"quelle est la capitale du népal ?": "La capitale du Népal est Katmandou.",
+"quelle est la capitale du sri lanka ?": "La capitale du Sri Lanka est Sri Jayawardenapura Kotte.",
+"quelle est la capitale de la birmanie ?": "La capitale de la Birmanie est Naypyidaw.",
+"quelle est la capitale de la thaïlande ?": "La capitale de la Thaïlande est Bangkok.",
+"quelle est la capitale du laos ?": "La capitale du Laos est Vientiane.",
+"quelle est la capitale du cambodge ?": "La capitale du Cambodge est Phnom Penh.",
+"quelle est la capitale du vietnam ?": "La capitale du Vietnam est Hanoï.",
+"quelle est la capitale de la malaisie ?": "La capitale de la Malaisie est Kuala Lumpur.",
+"quelle est la capitale de singapour ?": "Singapour est une cité-État, donc sa capitale est Singapour.",
+"quelle est la capitale de l'indonésie ?": "La capitale de l'Indonésie est Jakarta.",
+"quelle est la capitale des philippines ?": "La capitale des Philippines est Manille.",
+"quelle est la capitale de la corée du sud ?": "La capitale de la Corée du Sud est Séoul.",
+"quelle est la capitale de la corée du nord ?": "La capitale de la Corée du Nord est Pyongyang.",
+"quelle est la capitale de la mongolie ?": "La capitale de la Mongolie est Oulan-Bator.",
+"quelle est la capitale de taïwan ?": "La capitale de Taïwan est Taipei.",
+"quelle est la capitale de l'iran ?": "La capitale de l'Iran est Téhéran.",
+"quelle est la capitale de l'irak ?": "La capitale de l'Irak est Bagdad.",
+"quelle est la capitale de la syrie ?": "La capitale de la Syrie est Damas.",
+"quelle est la capitale du liban ?": "La capitale du Liban est Beyrouth.",
+"quelle est la capitale de la jordanie ?": "La capitale de la Jordanie est Amman.",
+"quelle est la capitale d'israël ?": "La capitale d'Israël est Jérusalem.",
+"quelle est la capitale de l'arabie saoudite ?": "La capitale de l'Arabie Saoudite est Riyad.",
+"quelle est la capitale du yémen ?": "La capitale du Yémen est Sanaa.",
+"quelle est la capitale d'oman ?": "La capitale d'Oman est Mascate.",
+"quelle est la capitale des émirats arabes unis ?": "La capitale des Émirats Arabes Unis est Abou Dabi.",
+"quelle est la capitale du qatar ?": "La capitale du Qatar est Doha.",
+"quelle est la capitale du koweït ?": "La capitale du Koweït est Koweït City.",
+"quelle est la capitale de bahreïn ?": "La capitale de Bahreïn est Manama.",
+"quelle est la capitale de l'algérie ?": "La capitale de l'Algérie est Alger.",
+"quelle est la capitale de la tunisie ?": "La capitale de la Tunisie est Tunis.",
+"quelle est la capitale du maroc ?": "La capitale du Maroc est Rabat.",
+"quelle est la capitale de la libye ?": "La capitale de la Libye est Tripoli.",
+"quelle est la capitale du soudan ?": "La capitale du Soudan est Khartoum.",
+"quelle est la capitale de l'éthiopie ?": "La capitale de l'Éthiopie est Addis-Abeba.",
+"quelle est la capitale du kenya ?": "La capitale du Kenya est Nairobi.",
+"quelle est la capitale de la tanzanie ?": "La capitale de la Tanzanie est Dodoma.",
+"quelle est la capitale de l'ouganda ?": "La capitale de l'Ouganda est Kampala.",
+"quelle est la capitale du rwanda ?": "La capitale du Rwanda est Kigali.",
+"quelle est la capitale du burundi ?": "La capitale du Burundi est Gitega.",
+"quelle est la capitale de la somalie ?": "La capitale de la Somalie est Mogadiscio.",
+"quelle est la capitale de djibouti ?": "La capitale de Djibouti est Djibouti.",
+"quelle est la capitale de l'érythrée ?": "La capitale de l'Érythrée est Asmara."
+
+
+        };
+
+        function sendMessage() {
+            const userInput = document.getElementById('user-input').value;
+            afficherMessage(userInput, 'user');
+            const reponse = obtenirReponse(userInput);
+            afficherMessage("Opal 1.0 Poet IQ150: " + reponse, 'bot');
+            document.getElementById('user-input').value = '';
+        }
+
+        function obtenirReponse(question) {
+            const questionMin = question.toLowerCase();
+            return answers[questionMin] || "Désolé, je ne connais pas la réponse à cette question.";
+        }
+
+        function afficherMessage(message, sender) {
+            const chatbox = document.getElementById('chat-messages');
+            const messageElem = document.createElement('div');
+            messageElem.textContent = message;
+            messageElem.classList.add('chat-message', sender);
+            chatbox.appendChild(messageElem);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
