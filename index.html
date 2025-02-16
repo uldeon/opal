@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opal AI</title>
-    <style>
+    <style> 
+        @keyframes fadeIn {
+            0% { 
+                opacity: 0;
+            }
+            100% { 
+                opacity: 1;
+            }
         @keyframes colorChange {
             0% {
                 color: #28709B;
@@ -59,6 +66,7 @@
             padding: 15px;
             overflow-y: auto;
             border-bottom: 1px solid #3c3c3c;
+            animation: fadeIn 1s;
         }
         .chat-message {
             margin-bottom: 15px;
