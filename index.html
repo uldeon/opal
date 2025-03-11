@@ -459,7 +459,7 @@
         function sendMessage() {
             let userInput = document.getElementById('user-input').value;
             afficherMessage(userInput, 'user');
-            let userInput = removePunctuationExceptQuestionMark(userInput);
+            userInput = removePunctuationExceptQuestionMark(userInput);
             const reponse = obtenirReponse(userInput);
             afficherMessage("Opal 1.0 Poet IQ150: " + reponse, 'bot');
             document.getElementById('user-input').value = '';
