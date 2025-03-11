@@ -452,29 +452,12 @@
 "coucou":"Coucou ! Je suis Opal, je peux répondre à tes questions."
             
         };
-        async function checkSpellingWithBonPatron(text) {
-    const url = 'https://bonpatron.com/fr/interface.html';
-
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-            text: text,
-            langue: 'fr',
-        }),
-    });
-        }
-    const result = await response.text();
-    console.log(result);
-        }
+   
         function removePunctuationExceptQuestionMark(text) {
     return text.replace(/[^\w\s?]/g, '');
         }
         function sendMessage() {
             let userInput = document.getElementById('user-input').value;
-            let userInput = checkSpellingWithBonPatron(userInput);
             afficherMessage(userInput, 'user');
             let userInput = removePunctuationExceptQuestionMark(userInput);
             const reponse = obtenirReponse(userInput);
