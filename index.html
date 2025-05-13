@@ -193,6 +193,7 @@
     
 
     <script>
+        const answersCache = new Map();
         const answers = {
             "bonjour": "Bonjour ! Je suis Opal™ 1.0 Poet IQ150, la toute première intelligence artificielle de Opal AI. 👋",
             "hello": "Hello ! I'm Opal™ 1.0 Poet IQ150, the first artificial intelligence of Opal AI. 👋",
@@ -470,25 +471,40 @@
 "coucou":"Coucou ! Je suis Opal, je peux répondre à tes questions."
             
         };
-   
-        function removePunctuationExceptQuestionMark(text) {
-    return text.replace(/[^\w\s?]/g, '');
+
+        function cleanUserInput(text) {
+    return text
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s?]/g, '') // Supprime les caractères spéciaux sauf '?'
+        .replace(/\s+/g, ' ');    // Réduit les espaces multiples à un seul espace
         }
         function removeSpaces(text) {
             return text.replace(/\s+/g, '');
         }
         function sendMessage() {
-            let userInput = document.getElementById('user-input').value;
-            afficherMessage(userInput, 'user');
-            userInput = removePunctuationExceptQuestionMark(userInput);
-            const reponse = obtenirReponse(userInput);
-            afficherMessage("Opal 1.0 Poet IQ150: " + reponse, 'bot');
-            document.getElementById('user-input').value = '';
-            sauvegarderMessages();
+            const userInputElement = document.getElementById('user-input');
+    let userInput = userInputElement.value;
+
+    if (!userInput.trim()) return; // Ignorer les entrées vides
+
+    afficherMessage(userInput, 'user');
+    const cleanedInput = cleanUserInput(userInput);
+
+    // Vérifier si la réponse est dans le cache
+    const reponse = answersCache.get(cleanedInput) || obtenirReponse(cleanedInput);
+    afficherMessage(`Opal 1.0 Poet IQ150: ${reponse}`, 'bot');
+
+    // Ajouter au cache pour un usage futur
+    if (!answersCache.has(cleanedInput)) {
+        answersCache.set(cleanedInput, reponse);
+    }
+
+    userInputElement.value = ''; // Réinitialiser le champ de texte
+    sauvegarderMessages();
         }
 
         function obtenirReponse(question) {
-            const questionMin = question.toLowerCase();
             return answers[questionMin] || "Désolé, je ne connais pas la réponse à cette question.";
         }
 
@@ -503,8 +519,7 @@
 
         function sauvegarderMessages() {
             const chatbox = document.getElementById('chat-messages');
-            const messages = chatbox.innerHTML;
-            localStorage.setItem('chatMessages', messages);
+    localStorage.setItem('chatMessages', chatbox.innerHTML);
         }
 
         function chargerMessages() {
@@ -518,8 +533,9 @@
 
         function newChat() {
             const chatbox = document.getElementById('chat-messages');
-            chatbox.innerHTML = '';
-            localStorage.removeItem('chatMessages');
+    chatbox.innerHTML = '';
+    localStorage.removeItem('chatMessages');
+    answersCache.clear(); // Réinitialiser le cache
         }
 
         // Charger les messages lors du chargement de la page
