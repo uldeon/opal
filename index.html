@@ -644,7 +644,7 @@
 
     // Vérifier si la réponse est dans le cache
     const reponse = answersCache.get(cleanedInput) || obtenirReponse(cleanedInput);
-    afficherMessage(`Opal 1.0 Poet IQ150: ${reponse}`, 'bot');
+    afficherMessage(`Opal: ${reponse}`, 'bot');
 
     // Ajouter au cache pour un usage futur
     if (!answersCache.has(cleanedInput)) {
@@ -694,7 +694,7 @@
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(texte);
       utterance.lang = "fr-FR";     // Langue : français
-      utterance.rate = 1;           // Vitesse de lecture
+      utterance.rate = 1.5;           // Vitesse de lecture
       utterance.pitch = 1;          // Tonalité
       speechSynthesis.speak(utterance);
     } else {
