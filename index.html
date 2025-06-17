@@ -662,6 +662,7 @@
         function afficherMessage(message, sender) {
             const chatbox = document.getElementById('chat-messages');
             const messageElem = document.createElement('div');
+            lireTexte(message);
             messageElem.textContent = message;
             messageElem.classList.add('chat-message', sender);
             chatbox.appendChild(messageElem);
@@ -687,6 +688,18 @@
     chatbox.innerHTML = '';
     localStorage.removeItem('chatMessages');
     answersCache.clear(); // Réinitialiser le cache
+        }
+
+        function lireTexte(texte) {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(texte);
+      utterance.lang = "fr-FR";     // Langue : français
+      utterance.rate = 1;           // Vitesse de lecture
+      utterance.pitch = 1;          // Tonalité
+      speechSynthesis.speak(utterance);
+    } else {
+      console.warn("La synthèse vocale n'est pas supportée par ce navigateur.");
+    }
         }
 
         // Charger les messages lors du chargement de la page
