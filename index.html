@@ -697,7 +697,7 @@
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(texte);
       utterance.lang = "fr-FR";     // Langue : français
-      utterance.rate = 1.5;           // Vitesse de lecture
+      utterance.rate = 2;           // Vitesse de lecture
       utterance.pitch = 1;          // Tonalité
       speechSynthesis.speak(utterance);
     } else {
